@@ -1,0 +1,400 @@
+(model/car.dart)-----------------------------------------------------------------------------------------------
+class Car{
+  String image;
+  int price;
+  String brand;
+  String model;
+  String co2;
+  String fuelCons;
+  Car(
+      this.image,
+      this.price,
+      this.brand,
+      this.model,
+      this.co2,this.fuelCons,
+      );
+}
+
+(screens/available/available.dart)---------------------------------------------------------------------------------
+import 'package:carui/constants.dart';
+import 'package:carui/model/car.dart';
+import 'package:carui/screens/available/widget/car_information.dart';
+import 'package:carui/screens/detail/car_detail_page.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+class availableCarScreen extends StatelessWidget {
+  const availableCarScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.teal,
+      appBar: buildAppBar(),
+      body: ListView.builder(
+          itemCount: carList.length,
+          itemBuilder: (context,index)=>CarListItem(index)),
+    );
+  }
+  }
+
+class CarListItem extends StatelessWidget {
+  const CarListItem(this.index,{
+    Key? key,
+  }) : super(key: key);
+  final int index;
+  @override
+  Widget build(BuildContext context) {
+    Car car=carList[index];
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context){return CarDetailScreen(car);},),);
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: Stack(
+          children: [
+            CarInformation(car: car),
+            Positioned(
+                right: 40,
+                child: Image.asset(car.image,
+                  height:80,
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+  AppBar buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.teal,
+      elevation: 0.0,
+      title: Text("Available Cars"),
+      actions: [IconButton(onPressed: null, icon: Icon(Icons.menu,color: Colors.white,),)],
+    );
+  }
+
+(screens/available/widget/car_information.dart)--------------------------------------------------------------
+import 'package:carui/model/car.dart';
+import 'package:carui/widgets/attribute.dart';
+import 'package:flutter/material.dart';
+class CarInformation extends StatelessWidget {
+  const CarInformation({
+    Key? key,
+    required this.car,
+  }) : super(key: key);
+
+  final Car car;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(left: 24,right: 24),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+          color: Colors.indigo,
+          borderRadius: BorderRadius.circular(16)
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('\$${car.price}',
+            style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),),
+          Text('price/hr',style: TextStyle(color: Colors.white),),
+          SizedBox(
+            height: 12,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween ,
+            children: [
+              Attribute(value: car.brand,name: 'Brand',),
+              Attribute(value: car.model,name: 'Model No',),
+              Attribute(value: car.co2,name: 'CO2',),
+              Attribute(value: car.fuelCons,name: 'Fuel Cons',),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+(screens/available/widgets/car_list_item.dart)---------------------------------------------------------------
+import 'package:carui/model/car.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../../../constants.dart';
+import 'car_information.dart';
+
+class CarListItem extends StatelessWidget {
+  const CarListItem(this.index,{
+    Key? key,
+  }) : super(key: key);
+  final int index;
+  @override
+  Widget build(BuildContext context) {
+    Car car=carList[index];
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      child: Stack(
+        children: [
+          CarInformation(car: car),
+          Positioned(
+              right: 40,
+              child: Image.asset(car.image,
+                height:80,
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+(screens/details/car_detail_page.dart)-------------------------------------------------------------------------------------
+import 'package:carui/model/car.dart';
+import 'package:carui/screens/detail/widgets/carDetail_Information.dart';
+import 'package:carui/screens/detail/widgets/my_app_bar.dart';
+import 'package:carui/widgets/attribute.dart';
+import 'package:flutter/material.dart';
+class CarDetailScreen extends StatelessWidget {
+  final Car car;
+   CarDetailScreen(this.car);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+         body: Container(
+             child: Stack(
+             children: [
+               Image.asset("assets/images/blue map.jpg",width: double.infinity,fit: BoxFit.fill,),
+               MyAppBar(),
+               Positioned(
+                 left: 24,
+                 right: 24,
+                 bottom: 24,
+                 child: Stack(
+                   children: [
+                     CarDetail_Information(car: car),
+                     Positioned(
+                         right: 16,
+                         child: Image.asset(car.image,
+                           height:100,
+                         )),
+                   ],
+                 ),
+             ),]
+             ),
+         )
+    );
+  }
+}
+
+(screens/details/widgets/carDetail_Information.dart)
+import 'package:carui/model/car.dart';
+import 'package:carui/widgets/attribute.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class CarDetail_Information extends StatelessWidget {
+  const CarDetail_Information({
+    Key? key,
+    required this.car,
+  }) : super(key: key);
+
+  final Car car;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 50),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+          color: Colors.indigo,
+          borderRadius: BorderRadius.circular(16)
+      ),
+
+      child: Column(
+        children: [
+          CarInfo(car: car),
+          Divider(height: 16,color: Colors.black87,),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset("assets/images/car_av.jpg",height: 90,),
+              SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    DriverInfo(),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(onPressed: (){},
+                            child: Text("Call",
+                              style: TextStyle(color: Colors.white,),)),
+                        ElevatedButton(onPressed: (){},
+                            child: Text("Book Now",
+                              style: TextStyle(color: Colors.white),)),
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class DriverInfo extends StatelessWidget {
+  const DriverInfo({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          children: const [
+            Text("M.Ahmed Amir",
+            style: TextStyle(
+              fontSize: 16,
+            fontWeight: FontWeight.w500,
+            ),
+            ),
+            Text("License NWR 369852",
+              style: TextStyle(
+                fontSize: 10,
+              ),
+            )
+          ],
+        ),
+        Column(crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            Text("369",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text("Ride",
+              style: TextStyle(
+                fontSize: 10,
+              ),
+            )
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class CarInfo extends StatelessWidget {
+  const CarInfo({
+    Key? key,
+    required this.car,
+  }) : super(key: key);
+
+  final Car car;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('\$${car.price}',
+          style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),),
+        Text('price/hr',style: TextStyle(color: Colors.white),),
+        SizedBox(
+          height: 12,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween ,
+          children: [
+            Attribute(value: car.brand,name: 'Brand',textColor: Colors.black87,),
+            Attribute(value: car.model,name: 'Model No',textColor: Colors.black87,),
+            Attribute(value: car.co2,name: 'CO2',textColor: Colors.black87,),
+            Attribute(value: car.fuelCons,name: 'Fuel Cons',textColor: Colors.black87,),
+          ],
+        )
+      ],
+    );
+  }
+}
+
+(screens/detail/widgets/my_app_bar.dart)-------------------------------------------------------------------------------
+import 'package:flutter/material.dart';
+class MyAppBar extends StatelessWidget {
+  const MyAppBar({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(onPressed: (){
+              Navigator.pop(context);
+            }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+            Text("Car Details",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            IconButton(onPressed: (){}, icon: Icon(Icons.menu,color: Colors.white,)),
+          ],
+        )
+    );
+  }
+}
+
+(widgets/constant.dart)--------------------------------------------------------------------------------------------------------
+import 'package:carui/model/car.dart';--
+List<Car>carList=[
+    Car('assets/images/Bentley Cars.png', 120, 'Bentley', '3A 9200','77/km', '5,5 L'),
+    Car('assets/images/cadillac.png', 185, 'Cadillac', '3A 9200', '77/km', '5,5 L'),
+    Car('assets/images/maserati.png', 254, 'Maserati', '3A 9200', '77/km', '5,5 L'),
+    Car('assets/images/RR car.png', 548, 'RR', '3A 9200', '77/km', '5,5 L'),
+  ];
+  
+  (widgets/main.dart)----------------------------------------------------------------------------------------------------------
+  import 'package:carui/screens/available/available.dart';
+import 'package:flutter/material.dart';
+
+void main(){
+  runApp(myApp());
+}
+class myApp extends StatelessWidget {
+  const myApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: availableCarScreen(),
+    );
+  }
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
